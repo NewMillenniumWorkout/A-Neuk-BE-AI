@@ -24,7 +24,7 @@ def read_root():
 
 @app.get("/test")
 def read_test():
-    return {"content": "from fastapi"}
+    return "fastapi api content"
 
 
 @app.get("/items/{item_id}")
