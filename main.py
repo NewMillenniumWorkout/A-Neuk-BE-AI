@@ -1,8 +1,11 @@
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from pydantic import BaseModel
+from srcs.auth import get_protected_docs, get_current_user
 
 app = FastAPI()
+
+get_protected_docs(app)
 
 
 class Item(BaseModel):
@@ -22,9 +25,15 @@ class ItemResponse(BaseModel):
 def read_root():
     return {"Hello": "World"}
 
+
 @app.get("/test")
 def read_test():
     return "fastapi api content"
+
+
+@app.get("/test-auth")
+def read_test(user: str = Depends(get_current_user)):
+    return "fastapi api auth content"
 
 
 @app.get("/items/{item_id}")
