@@ -1,7 +1,6 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
 from srcs.models.chat_models import ChatRequest
 
 
