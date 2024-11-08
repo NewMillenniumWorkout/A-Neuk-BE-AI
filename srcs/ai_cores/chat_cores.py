@@ -1,7 +1,10 @@
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 chat_prompt = ChatPromptTemplate.from_messages(
     [
@@ -10,7 +13,8 @@ chat_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-messages = chat_prompt.format_messages(
-    user_input="태양계에서 가장 큰 행성은 무엇인가요?"
-)
-print(messages)
+chat_llm = ChatOpenAI(model="gpt-4o-mini")
+
+chain = chat_prompt | chat_llm | StrOutputParser()
+
+print(chain.invoke({"user_input" : "천문학에서 태양계의 몇 번째 행성인지 알려줘"}))
