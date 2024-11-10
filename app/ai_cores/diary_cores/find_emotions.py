@@ -1,13 +1,5 @@
 from typing import List
-from app.models.diary_models import DiaryRequest, DiaryContent
-
-
-def diary_generate(request: DiaryRequest) -> str:
-    return f"{request} This is a diary_generate function"
-
-
-def diary_split(request: str) -> List[str]:
-    return ["This is a diary_split function"]
+from app.models.diary_models import DiaryContent
 
 
 def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
