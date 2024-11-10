@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.models.diary_models import DiaryRequest, DiaryResponse
-from app.ai_cores.diary_cores import diary_generate, diary_split, diary_find_emotions
+from app.ai_cores import diary_generate, diary_split, diary_find_emotions
 
 
 router = APIRouter(prefix="/ai/diary", tags=["Diary"])
