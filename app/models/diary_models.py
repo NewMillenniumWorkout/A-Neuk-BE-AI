@@ -78,3 +78,11 @@ class DiaryContent(BaseModel):
 class DiaryResponse(BaseModel):
     chat_id: int
     content_list: List[DiaryContent]
+
+
+class DairyStrList(BaseModel):
+    content_list: List[str]
+
+
+class LLMError(Exception):
+    pass
