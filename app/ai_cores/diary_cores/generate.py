@@ -1,7 +1,7 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
-from app.models.diary_models import DiaryRequest
+from app.models.diary_models import DiaryRequest, LLMError
 
 
 chat_llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
@@ -70,4 +70,8 @@ def diary_generate(request: DiaryRequest) -> str:
     )
 
     chain = chat_llm | StrOutputParser()
-    return chain.invoke(messages)
+    try:
+        result = chain.invoke(messages)
+        return result
+    except Exception as e:
+        raise LLMError("Failed to generate a diary entry.")
