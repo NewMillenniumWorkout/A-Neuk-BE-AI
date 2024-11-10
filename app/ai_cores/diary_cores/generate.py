@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from app.models.diary_models import DiaryRequest
 
 
-chat_llm = ChatOpenAI(model="gpt-4o")
+chat_llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
 
 default_diary_1 = """
 수현, 명석과의 먹방의 날 ,, 수현언니 시험 끝난 기념으로 상도에 새로 생긴 돼지한약방..?에 갔다. 가격은 좀 있었지만 고기 다 구워주시고 맛도 있었다!!
