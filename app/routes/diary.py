@@ -20,11 +20,11 @@ def debug_process(original, splitted, emotions):
 
 
 @router.post("/", response_model=DiaryResponse)
-def diary_post(request: DiaryRequest):
+async def diary_post(request: DiaryRequest):
     try:
-        original = diary_generate(request)
-        splitted = diary_split(original)
-        emotions = diary_find_emotions(splitted)
+        original = await diary_generate(request)
+        splitted = await diary_split(original)
+        emotions = await diary_find_emotions(splitted)
         debug_process(original, splitted, emotions)
     except LLMError as e:
         raise HTTPException(status_code=500, detail=f"Diary generation failed: {e}")

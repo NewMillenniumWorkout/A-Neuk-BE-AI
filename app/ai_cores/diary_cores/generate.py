@@ -58,7 +58,7 @@ Example3: {default_diary_3}
 """
 
 
-def diary_generate(request: DiaryRequest) -> str:
+async def diary_generate(request: DiaryRequest) -> str:
     messages = [SystemMessage(content=system_prompt)]
     for m in request.messages:
         if m.role == "MEMBER":
@@ -71,7 +71,7 @@ def diary_generate(request: DiaryRequest) -> str:
 
     chain = chat_llm | StrOutputParser()
     try:
-        result = chain.invoke(messages)
+        result = await chain.ainvoke(messages)
         return result
     except Exception as e:
         raise LLMError("Failed to generate a diary entry.")

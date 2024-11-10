@@ -67,11 +67,11 @@ prompt = PromptTemplate(
 )
 
 
-def diary_split(request: str) -> List[str]:
+async def diary_split(request: str) -> List[str]:
     chain = {"query": few_shot_prompt} | prompt | llm | output_parser
 
     try:
-        result = chain.invoke({"query": request})
+        result = await chain.ainvoke({"query": request})
         if result["content_list"] is None:
             raise LLMError()
         return result["content_list"]
