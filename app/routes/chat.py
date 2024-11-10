@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from srcs.models.chat_models import ChatRequest, ChatResponse
-from srcs.ai_cores.chat_cores import chat_generate
+from app.models.chat_models import ChatRequest, ChatResponse
+from app.ai_cores.chat_cores import chat_generate
 
 
 router = APIRouter(prefix="/ai/chat", tags=["Chat"])

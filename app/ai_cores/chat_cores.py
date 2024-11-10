@@ -1,7 +1,7 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
-from srcs.models.chat_models import ChatRequest
+from app.models.chat_models import ChatRequest
 
 
 chat_llm = ChatOpenAI(model="gpt-4o-mini")

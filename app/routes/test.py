@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from typing import Union
 from fastapi import Depends
-from srcs.auth import get_current_user
-from srcs.models.test_item_models import TestItemResponse, TestItem
+from app.utils.auth import get_current_user
+from app.models.test_item_models import TestItemResponse, TestItem
 
 
 router = APIRouter(prefix="/test", tags=["Test"])

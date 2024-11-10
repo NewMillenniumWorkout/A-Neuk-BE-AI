@@ -3,10 +3,10 @@ from fastapi import FastAPI
 
 load_dotenv()
 
-from srcs.auth import get_protected_docs
-from srcs.routes import root
-from srcs.routes import test
-from srcs.routes import chat
+from app.utils.auth import get_protected_docs
+from app.routes import root
+from app.routes import test
+from app.routes import chat
 
 app = FastAPI()
 get_protected_docs(app)
