@@ -32,5 +32,6 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
+    chat_id: int
     role: str
     message: str

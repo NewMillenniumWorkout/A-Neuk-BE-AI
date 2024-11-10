@@ -1,7 +1,7 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
-from srcs.models.chat_models import ChatRequest
+from app.models.chat_models import ChatRequest
 
 
 chat_llm = ChatOpenAI(model="gpt-4o-mini")
@@ -40,7 +40,7 @@ At the end of one topic, ask questions to smoothly transition to another.
 """
 
 
-def chat_generate(request: ChatRequest) -> str:
+async def chat_generate(request: ChatRequest) -> str:
     messages = [SystemMessage(content=system_prompt)]
     for m in request.messages:
         if m.role == "MEMBER":
@@ -49,4 +49,5 @@ def chat_generate(request: ChatRequest) -> str:
             messages.append(AIMessage(content=m.message))
 
     chain = chat_llm | StrOutputParser()
-    return chain.invoke(messages)
+    result = await chain.ainvoke(messages)
+    return result
