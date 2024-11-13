@@ -7,6 +7,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 import random
 import dotenv
+import Levenshtein
 
 dotenv.load_dotenv()
 
@@ -55,6 +56,23 @@ prompt = PromptTemplate(
 )
 
 
+def find_most_similar_word_levenshtein(target_word: str) -> str:
+    distances = [
+        (word, Levenshtein.distance(target_word, word)) for word in emotions_db
+    ]
+    most_similar_word = min(distances, key=lambda x: x[1])
+    print(
+        f"Most similar word to {target_word} is {most_similar_word[0]}, distance: {most_similar_word[1]}"
+    )
+    return most_similar_word[0]
+
+
+def check_valid_emotion(emotion: str) -> bool:
+    if emotion in emotions_db:
+        return True
+    return False
+
+
 async def find_emotions_from_sentence(sentence: str) -> List[str]:
     random.shuffle(emotions_db)
     chain = prompt | llm | output_parser
@@ -63,11 +81,16 @@ async def find_emotions_from_sentence(sentence: str) -> List[str]:
     )
     result_list = []
     for key, value in result.items():
-        result_list.append(value)
+        if key.startswith("common") or key.startswith("uncommon"):
+            if check_valid_emotion(value):
+                result_list.append(value)
+            else:
+                result_list.append(find_most_similar_word_levenshtein(value))
     return result_list
 
 
 async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
+
     content_list = []
     for idx, content in enumerate(request):
         content_list.append(
