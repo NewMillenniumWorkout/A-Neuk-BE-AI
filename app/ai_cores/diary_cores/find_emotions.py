@@ -42,6 +42,7 @@ format_instructions = output_parser.get_format_instructions()
 if os.path.exists("emotion_embeddings.index") and os.path.exists("emotion_labels.npy"):
     faiss_index = faiss.read_index("emotion_embeddings.index")
     emotion_labels = np.load("emotion_labels.npy", allow_pickle=True)
+    print("이미 존재하는 FAISS 인덱스 및 레이블 파일을 불러왔습니다.")
 else:
     # 존재하지 않으면 임베딩을 생성하고 저장
     emotion_embeddings = []
@@ -91,7 +92,8 @@ def find_most_similar_word_embedding(target_word, top_n=1):
     _, indices = faiss_index.search(input_embedding, top_n)
 
     top_emotions = [emotion_labels[idx] for idx in indices[0]]
-    return top_emotions
+    print(f"Most similar word to '{target_word}' is {top_emotions[0]}, distance: {indices[0][0]}")
+    return top_emotions[0]
 
 
 def check_valid_emotion(emotion: str) -> bool:
@@ -119,11 +121,12 @@ async def find_emotions_from_sentence(sentence: str) -> List[str]:
 async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
     content_list = []
     for idx, content in enumerate(request):
+        recommend_emotion = await find_emotions_from_sentence(content)
         content_list.append(
             DiaryContent(
                 order_index=idx,
                 original_content=content,
-                recommend_emotion=await find_emotions_from_sentence(content),
+                recommend_emotion=recommend_emotion,
             )
         )
     return content_list
