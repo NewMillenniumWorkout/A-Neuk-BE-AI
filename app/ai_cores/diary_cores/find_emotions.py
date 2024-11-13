@@ -92,7 +92,9 @@ def find_most_similar_word_embedding(target_word, top_n=1):
     _, indices = faiss_index.search(input_embedding, top_n)
 
     top_emotions = [emotion_labels[idx] for idx in indices[0]]
-    print(f"Most similar word to '{target_word}' is {top_emotions[0]}, distance: {indices[0][0]}")
+    print(
+        f"Most similar word to '{target_word}' is {top_emotions[0]}, distance: {indices[0][0]}"
+    )
     return top_emotions[0]
 
 
@@ -114,7 +116,8 @@ async def find_emotions_from_sentence(sentence: str) -> List[str]:
             if check_valid_emotion(value):
                 result_list.append(value)
             else:
-                result_list.append(find_most_similar_word_embedding(value))
+                # result_list.append(find_most_similar_word_embedding(value))
+                pass
     return result_list
 
 
