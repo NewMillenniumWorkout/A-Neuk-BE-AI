@@ -7,7 +7,10 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 import random
 import dotenv
-import Levenshtein
+import faiss
+import numpy as np
+import os
+from langchain.embeddings import OpenAIEmbeddings
 
 dotenv.load_dotenv()
 
@@ -29,9 +32,33 @@ with open("emotions.txt", "r", encoding="utf-8") as f:
     emotions_db = [line.strip() for line in f.readlines()]
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 output_parser = JsonOutputParser(pydantic_object=DiaryEmotionList)
 format_instructions = output_parser.get_format_instructions()
+
+
+# FAISS 인덱스 및 레이블 파일이 이미 존재하는지 확인
+if os.path.exists("emotion_embeddings.index") and os.path.exists("emotion_labels.npy"):
+    faiss_index = faiss.read_index("emotion_embeddings.index")
+    emotion_labels = np.load("emotion_labels.npy", allow_pickle=True)
+else:
+    # 존재하지 않으면 임베딩을 생성하고 저장
+    emotion_embeddings = []
+    for idx, emotion in enumerate(emotions_db):
+        embedding = embedding_model.embed_query(emotion)
+        emotion_embeddings.append(embedding)
+        print(f"{idx + 1}/{len(emotions_db)}: '{emotion}' 임베딩 생성 완료")
+
+    # 감정 단어를 위한 FAISS 인덱스 생성 및 추가
+    dimension = len(emotion_embeddings[0])  # 임베딩 차원 수
+    faiss_index = faiss.IndexFlatL2(dimension)
+    faiss_index.add(np.array(emotion_embeddings).astype("float32"))
+
+    # FAISS 인덱스와 단어 리스트를 로컬에 저장
+    faiss.write_index(faiss_index, "emotion_embeddings.index")
+    with open("emotion_labels.npy", "wb") as f:
+        np.save(f, np.array(emotions_db))
 
 system_prompt = """
 The input sentence is part of a diary entry describing the user’s day. Please perform the following tasks to identify emotions the diary author may have felt but might not have fully noticed.
@@ -56,15 +83,15 @@ prompt = PromptTemplate(
 )
 
 
-def find_most_similar_word_levenshtein(target_word: str) -> str:
-    distances = [
-        (word, Levenshtein.distance(target_word, word)) for word in emotions_db
-    ]
-    most_similar_word = min(distances, key=lambda x: x[1])
-    print(
-        f"Most similar word to {target_word} is {most_similar_word[0]}, distance: {most_similar_word[1]}"
+def find_most_similar_word_embedding(target_word, top_n=1):
+    input_embedding = np.array(
+        [embedding_model.embed_query(target_word)], dtype="float32"
     )
-    return most_similar_word[0]
+
+    _, indices = faiss_index.search(input_embedding, top_n)
+
+    top_emotions = [emotion_labels[idx] for idx in indices[0]]
+    return top_emotions
 
 
 def check_valid_emotion(emotion: str) -> bool:
@@ -85,12 +112,11 @@ async def find_emotions_from_sentence(sentence: str) -> List[str]:
             if check_valid_emotion(value):
                 result_list.append(value)
             else:
-                result_list.append(find_most_similar_word_levenshtein(value))
+                result_list.append(find_most_similar_word_embedding(value))
     return result_list
 
 
 async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
-
     content_list = []
     for idx, content in enumerate(request):
         content_list.append(
