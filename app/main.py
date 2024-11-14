@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
@@ -13,6 +14,7 @@ from app.routes import remake
 app = FastAPI()
 get_protected_docs(app)
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 app.include_router(root.router)
 app.include_router(test.router)
 app.include_router(chat.router)
