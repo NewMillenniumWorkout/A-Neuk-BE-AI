@@ -1,7 +1,7 @@
 from langchain_core.output_parsers import StrOutputParser
 from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_openai import ChatOpenAI
-from app.models.diary_models import DiaryRequest, LLMError
+from src.models.diary_models import DiaryRequest, LLMError
 
 
 chat_llm = ChatOpenAI(model="gpt-4o", temperature=0.7)

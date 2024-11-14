@@ -2,7 +2,7 @@ from typing import List
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate, FewShotPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from app.models.diary_models import DairyStrList, LLMError
+from src.models.diary_models import DairyStrList, LLMError
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 

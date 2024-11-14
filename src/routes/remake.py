@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from app.models.remake_models import RemakeRequest, RemakeResponse
-from app.ai_cores import remake_sentence
+from src.models.remake_models import RemakeRequest, RemakeResponse
+from src.ai_cores import remake_sentence
 
 
 router = APIRouter(prefix="/ai/remake", tags=["Remake"])

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from app.models.chat_models import ChatRequest
+from src.models.chat_models import ChatRequest
 
 
 class DiaryRequest(ChatRequest):
