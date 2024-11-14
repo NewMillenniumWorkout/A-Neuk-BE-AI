@@ -86,3 +86,16 @@ class DairyStrList(BaseModel):
 
 class LLMError(Exception):
     pass
+
+
+class DiaryEmotionList(BaseModel):
+    common_top1: str
+    common_top2: str
+    common_top3: str
+    common_top4: str
+    common_top5: str
+    uncommon_top1: str
+    uncommon_top2: str
+    uncommon_top3: str
+    uncommon_top4: str
+    uncommon_top5: str
