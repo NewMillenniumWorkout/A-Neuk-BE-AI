@@ -6,7 +6,8 @@ body {
     padding: 20px;
 }
 
-#chat-box {
+#chat-box,
+#diary-box {
     width: 100%;
     max-width: 600px;
     height: 400px;
@@ -16,7 +17,15 @@ body {
     margin-bottom: 10px;
 }
 
-.message {
+#input-container {
+    display: flex;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 10px;
+}
+
+.message,
+.diary-entry {
     margin: 5px 0;
     padding: 8px;
     border-radius: 5px;
@@ -27,25 +36,26 @@ body {
     text-align: left;
 }
 
-.user {
+.member {
     background-color: #c8e6c9;
     text-align: right;
 }
 
-#input-container {
-    display: flex;
-    width: 100%;
-    max-width: 600px;
-}
-
-#message-input {
+#message-input,
+#diary-input {
     flex: 1;
     padding: 8px;
     font-size: 16px;
 }
 
-#send-button {
+#send-button,
+#diary-button {
     padding: 8px;
     font-size: 16px;
     cursor: pointer;
+}
+
+.diary-entry {
+    background-color: #fff8e1;
+    border-left: 3px solid #ffc107;
 }
