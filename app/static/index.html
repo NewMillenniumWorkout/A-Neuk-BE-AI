@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1>Chat with AI</h1>
+    <h1>"/ai/chat/" POST</h1>
     <div id="chat-box"></div>
 
     <div id="input-container">
@@ -17,97 +17,36 @@
         <button id="send-button" onclick="sendMessage()">Send</button>
     </div>
 
-    <h1>Diary Entry</h1>
+    <button id="diary-button" onclick="sendDiary()">Make Diary</button>
+    <h1></h1>
+    <h1>"/ai/diary/" POST & "/ai/remake/" POST</h1>
     <div id="diary-box"></div>
 
-    <button id="diary-button" onclick="sendDiary()">Submit Diary</button>
+
+    <div id="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div> <!-- 로딩 표시 추가 -->
 
     <script>
-        // ex = [
-        //     {
-        //         "order_index": 0,
-        //         "original_content": "오늘은 정말 정신없는 하루였다. 과제가 쌓여서 그런지 마음이 무거웠다.",
-        //         "remade_content": "오늘은 정말 정신없는 하루였다. 과제가 쌓여서 그런지 마음이 무거웠다.",
-        //         "recommend_emotion": [
-        //             "우울하다",
-        //             "불안하다",
-        //             "답답하다",
-        //             "걱정하다",
-        //             "허탈하다",
-        //             "고독하다",
-        //             "조바심하다",
-        //             "무시무시하다",
-        //             "각박하다"
-        //         ]
-        //     },
-        //     {
-        //         "order_index": 1,
-        //         "original_content": "특히 캡스톤 프로젝트가 나를 압박하고 있는 것 같다. 주제도 마음에 들지 않고, 진행 상황도 별로라서 더 걱정이다.",
-        //         "remade_content": "특히 캡스톤 프로젝트가 나를 압박하고 있는 것 같다. 주제도 마음에 들지 않고, 진행 상황도 별로라서 더 걱정이다.",
-        //         "recommend_emotion": [
-        //             "불안하다",
-        //             "걱정하다",
-        //             "우울하다",
-        //             "답답하다",
-        //             "실망하다",
-        //             "갈등하다",
-        //             "기진맥진하다",
-        //             "심란하다",
-        //             "망연자실하다",
-        //             "처참하다"
-        //         ]
-        //     },
-        //     {
-        //         "order_index": 2,
-        //         "original_content": "그래도 저녁에 치킨을 먹으면서 잠시나마 기분 전환을 했다. 양념 맛이었는데, 역시 치킨은 언제 먹어도 맛있다.",
-        //         "remade_content": "그래도 저녁에 치킨을 먹으면서 잠시나마 기분 전환을 했다. 양념 맛이었는데, 역시 치킨은 언제 먹어도 맛있다.",
-        //         "recommend_emotion": []
-        //     },
-        //     {
-        //         "order_index": 3,
-        //         "original_content": "인공지능 LLM에 대한 생각도 해봤다. 기술이 많이 발전했지만, 아직 갈 길이 멀다는 느낌이다.",
-        //         "remade_content": "인공지능 LLM에 대한 생각도 해봤다. 기술이 많이 발전했지만, 아직 갈 길이 멀다는 느낌이다.",
-        //         "recommend_emotion": [
-        //             "불안하다",
-        //             "우울하다",
-        //             "실망하다",
-        //             "걱정하다",
-        //             "상실감 들다",
-        //             "갈증 나다",
-        //             "애통하다",
-        //             "허탈하다",
-        //             "무안하다",
-        //             "신기하다"
-        //         ]
-        //     },
-        //     {
-        //         "order_index": 4,
-        //         "original_content": "이런저런 고민이 많은 하루였지만, 내일은 좀 더 나아지길 바라본다.",
-        //         "remade_content": "이런저런 고민이 많은 하루였지만, 내일은 좀 더 나아지길 바라본다.",
-        //         "recommend_emotion": [
-        //             "불안하다",
-        //             "걱정하다",
-        //             "안타깝다",
-        //             "상실감 들다",
-        //             "초조하다",
-        //             "갈망하다",
-        //             "애달프다",
-        //             "우울하다"
-        //         ]
-        //     }
-        // ]
         let chatId = 0;
         const chatBox = document.getElementById("chat-box");
         const diaryBox = document.getElementById("diary-box");
         const chatHistory = [{ role: "ASSISTANT", message: "안녕! 오늘 하루는 어땠어?" }];
-        const diaryData = [];
-        const selectedEmotions = {}; // 선택된 감정 초기화
-        displayDiaryResponse(ex);
+        let diaryData = [];
+        let selectedEmotions = {}; // 선택된 감정 초기화
+        const loadingIndicator = document.getElementById("loading");
 
         document.getElementById("message-input").addEventListener("keyup", function (event) {
             if (event.key === "Enter") sendMessage();
         });
         displayChatHistory();
+
+        function displayLoading(isLoading) {
+            loadingIndicator.style.display = isLoading ? "block" : "none";
+            document.getElementById("send-button").disabled = isLoading;
+            document.getElementById("diary-button").disabled = isLoading;
+        }
 
         async function sendMessage() {
             const userMessage = document.getElementById("message-input").value;
@@ -115,13 +54,14 @@
 
             chatHistory.push({ role: "MEMBER", message: userMessage });
             displayChatHistory();
-
             document.getElementById("message-input").value = "";
 
             const requestBody = {
                 chat_id: chatId,
                 messages: chatHistory
             };
+
+            displayLoading(true); // 로딩 시작
 
             try {
                 const response = await fetch("/ai/chat/", {
@@ -135,11 +75,12 @@
                 const data = await response.json();
                 chatHistory.push({ role: data.role, message: data.message });
                 displayChatHistory();
-
                 chatId = data.chat_id;
             } catch (error) {
                 chatHistory.push({ role: "ASSISTANT", message: "API call failed." });
                 displayChatHistory();
+            } finally {
+                displayLoading(false); // 로딩 종료
             }
         }
 
@@ -148,6 +89,8 @@
                 chat_id: chatId,
                 messages: chatHistory
             };
+
+            displayLoading(true); // 로딩 시작
 
             try {
                 const response = await fetch("/ai/diary/", {
@@ -159,13 +102,14 @@
                 });
 
                 const data = await response.json();
-                console.log(data);
                 diaryData = data.content_list;
                 for (let i = 0; i < diaryData.length; i++)
                     diaryData[i].remade_content = diaryData[i].original_content;
                 displayDiaryResponse(diaryData);
             } catch (error) {
                 console.error("Diary API call failed.", error);
+            } finally {
+                displayLoading(false); // 로딩 종료
             }
         }
 
@@ -215,6 +159,9 @@
                             diaryEntry.querySelector("p").textContent = content.remade_content;
                             return;
                         }
+
+                        displayLoading(true); // 로딩 시작
+
                         const response = await fetch("/ai/remake/", {
                             method: "POST",
                             headers: {
@@ -226,11 +173,12 @@
                             }),
                         });
 
+                        displayLoading(false); // 로딩 종료
+
                         if (response.ok) {
                             const result = await response.json();
                             content.remade_content = result.remade_content;
                             diaryEntry.querySelector("p").textContent = result.remade_content;
-                            console.log("서버로부터 응답:", result.remade_content);
                         } else {
                             console.error("서버 요청 실패:", response.statusText);
                         }
