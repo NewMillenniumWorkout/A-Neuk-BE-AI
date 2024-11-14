@@ -37,5 +37,5 @@ async def remake_sentence(origin: str, emotions: List[str]) -> str:
     result = await chain.ainvoke(
         {"query": origin, "emotion_list_with_comma": ",".join(emotions)}
     )
-    print(result["remade_content"])
+    # print(result["remade_content"])
     return result["remade_content"]

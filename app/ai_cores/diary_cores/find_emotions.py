@@ -45,14 +45,14 @@ prompt = PromptTemplate(
 if os.path.exists("emotion_embeddings.index") and os.path.exists("emotion_labels.npy"):
     faiss_index = faiss.read_index("emotion_embeddings.index")
     emotion_labels = np.load("emotion_labels.npy", allow_pickle=True)
-    print("이미 존재하는 FAISS 인덱스 및 레이블 파일을 불러왔습니다.")
+    # print("이미 존재하는 FAISS 인덱스 및 레이블 파일을 불러왔습니다.")
 else:
     # 존재하지 않으면 임베딩을 생성하고 저장
     emotion_embeddings = []
     for idx, emotion in enumerate(emotions_db):
         embedding = embedding_model.embed_query(emotion)
         emotion_embeddings.append(embedding)
-        print(f"{idx + 1}/{len(emotions_db)}: '{emotion}' 임베딩 생성 완료")
+        # print(f"{idx + 1}/{len(emotions_db)}: '{emotion}' 임베딩 생성 완료")
 
     # 감정 단어를 위한 FAISS 인덱스 생성 및 추가
     dimension = len(emotion_embeddings[0])  # 임베딩 차원 수
@@ -73,9 +73,9 @@ def find_most_similar_word_embedding(target_word, top_n=1):
     _, indices = faiss_index.search(input_embedding, top_n)
 
     top_emotions = [emotion_labels[idx] for idx in indices[0]]
-    print(
-        f"Most similar word to '{target_word}' is {top_emotions[0]}, distance: {indices[0][0]}"
-    )
+    # print(
+    #     f"Most similar word to '{target_word}' is {top_emotions[0]}, distance: {indices[0][0]}"
+    # )
     return top_emotions[0]
 
 
