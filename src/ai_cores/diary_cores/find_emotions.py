@@ -8,6 +8,8 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain.embeddings import OpenAIEmbeddings
+import asyncio
+import time
 
 
 with open("emotions.txt", "r", encoding="utf-8") as f:
@@ -97,14 +99,19 @@ async def find_emotions_from_sentence(sentence: str) -> List[str]:
 
 
 async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
-    content_list = []
-    for idx, content in enumerate(request):
-        recommend_emotion = await find_emotions_from_sentence(content)
-        content_list.append(
-            DiaryContent(
-                order_index=idx,
-                original_content=content,
-                recommend_emotion=recommend_emotion,
-            )
+    start_time = time.time()
+
+    # 각 입력 문장에 대해 비동기 작업 생성
+    tasks = [find_emotions_from_sentence(content) for content in request]
+    results = await asyncio.gather(*tasks)
+
+    content_list = [
+        DiaryContent(
+            order_index=idx, original_content=content, recommend_emotion=result
         )
+        for idx, (content, result) in enumerate(zip(request, results))
+    ]
+
+    end_time = time.time()
+    print(f"diary_find_emotions executed in {end_time - start_time:.2f} seconds.")
     return content_list
