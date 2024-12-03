@@ -99,7 +99,7 @@ async def find_emotions_from_sentence(sentence: str) -> List[str]:
 
 
 async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
-    start_time = time.time()
+    # start_time = time.time()
 
     # 각 입력 문장에 대해 비동기 작업 생성
     tasks = [find_emotions_from_sentence(content) for content in request]
@@ -112,6 +112,6 @@ async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
         for idx, (content, result) in enumerate(zip(request, results))
     ]
 
-    end_time = time.time()
-    print(f"diary_find_emotions executed in {end_time - start_time:.2f} seconds.")
+    # end_time = time.time()
+    # print(f"diary_find_emotions executed in {end_time - start_time:.2f} seconds.")
     return content_list

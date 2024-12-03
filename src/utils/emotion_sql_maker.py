@@ -1,5 +1,5 @@
 # 파일 경로 설정
-input_file = "emotionsWithCategory.txt"
+input_file = "emotions.txt"
 output_file = "insert_emotions.sql"
 
 default = """
@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS emotion (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     category TEXT NOT NULL DEFAULT '기타',
+    description TEXT NOT NULL,
     example TEXT
 );
 """
@@ -26,13 +27,13 @@ if __name__ == "__main__":
             if line:  # 비어 있지 않은 경우만 처리
                 # 탭으로 구분된 단어와 카테고리 분리
                 try:
-                    word, category = line.split("\t")
+                    word, category, description = line.split("\t")
                 except ValueError:
                     print(f"잘못된 형식의 줄: {line}")
                     continue
                 
                 # SQL 변환
-                sql_line = f"    ('{word}', '{category}', NULL)"
+                sql_line = f"    ('{word}', '{category}', '{description}',  NULL)"
                 if i < len(lines) - 1:  # 마지막 줄에만 쉼표 제거
                     sql_line += ","
                 sql_line += "\n"
