@@ -4,7 +4,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from src.models.remake_models import RemakeResponse
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.25)
 
 output_parser = JsonOutputParser(pydantic_object=RemakeResponse)
 format_instructions = output_parser.get_format_instructions()
