@@ -19,19 +19,21 @@ def debug_process(original, splitted, emotions):
     print("\n")
 
 
+async def measure_time(func, *args, **kwargs):
+    start_time = time.time()
+    result = await func(*args, **kwargs)
+    elapsed_time = time.time() - start_time
+    print(f"{func.__name__} executed in {elapsed_time:.2f} seconds.")
+    return result
+
+
 @router.post("/", response_model=DiaryResponse)
 async def diary_post(request: DiaryRequest):
-
     try:
-        # start_time = time.time()
+        original = await measure_time(diary_generate, request)
+        splitted = await measure_time(diary_split, original)
+        emotions = await measure_time(diary_find_emotions, splitted)
 
-        original = await diary_generate(request)
-        splitted = await diary_split(original)
-        emotions = await diary_find_emotions(splitted)
-
-        # debug_process(original, splitted, emotions)
-        # end_time = time.time()
-        # print(f"diary_post executed in {end_time - start_time:.2f} seconds.")
     except LLMError as e:
         raise HTTPException(status_code=500, detail=f"Diary generation failed: {e}")
 
