@@ -89,13 +89,19 @@ class LLMError(Exception):
 
 
 class DiaryEmotionList(BaseModel):
-    common_top1: str
-    common_top2: str
-    common_top3: str
-    common_top4: str
-    common_top5: str
-    common_top6: str
-    common_top7: str
-    uncommon_top1: str
-    uncommon_top2: str
-    uncommon_top3: str
+    common_top1: int
+    common_top2: int
+    common_top3: int
+    common_top4: int
+    common_top5: int
+    common_top6: int
+    common_top7: int
+    uncommon_top1: int
+    uncommon_top2: int
+    uncommon_top3: int
+
+
+class DirayCategoryList(BaseModel):
+    category1: int
+    category2: int
+    category3: int
