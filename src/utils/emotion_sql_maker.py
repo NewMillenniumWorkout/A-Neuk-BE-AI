@@ -18,7 +18,7 @@ if __name__ == "__main__":
     with open(input_file, "r", encoding="utf-8") as infile, open(output_file, "w", encoding="utf-8") as outfile:
         # 테이블에 INSERT 시작
         outfile.write(default)
-        outfile.write("INSERT INTO emotion (title, category, example)\nVALUES\n")
+        outfile.write("INSERT INTO emotion (title, category, description, example)\nVALUES\n")
         
         # 단어 읽어서 SQL 변환
         lines = infile.readlines()
@@ -27,15 +27,18 @@ if __name__ == "__main__":
             if line:  # 비어 있지 않은 경우만 처리
                 # 탭으로 구분된 단어와 카테고리 분리
                 try:
-                    word, category, description = line.split("\t")
+                    print(line)
+                    word, category, description, example = line.split("\t")
                 except ValueError:
                     print(f"잘못된 형식의 줄: {line}")
                     continue
                 
                 # SQL 변환
-                sql_line = f"    ('{word}', '{category}', '{description}',  NULL)"
+                # sql_line = f"    ('{word}', '{category}', '{description}', '{example}')"
+                sql_line = f"UPDATE emotion\nSET example='{example}'\nWHERE title='{word}'\n"
                 if i < len(lines) - 1:  # 마지막 줄에만 쉼표 제거
-                    sql_line += ","
+                    # sql_line += ","
+                    sql_line += ";"
                 sql_line += "\n"
                 outfile.write(sql_line)
         
