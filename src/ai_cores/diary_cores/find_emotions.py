@@ -113,7 +113,8 @@ find_emotions_prompt = PromptTemplate(
 
 async def find_emotions_from_sentence(sentence: str, category_id: int) -> List[str]:
     result_list = []
-    emotions_db_copy = emotion_dict[emotion_categories[category_id]]
+    emotions_db_copy = copy.deepcopy(emotion_dict[emotion_categories[category_id]])
+    random.shuffle(emotions_db_copy)
     emotions_chain = find_emotions_prompt | llms[0] | find_emotions_output_parser
     result = await emotions_chain.ainvoke(
         {
@@ -141,11 +142,12 @@ async def find_category_from_sentence(sentence: str) -> List[str]:
             category_id = 2
         result_list += await find_emotions_from_sentence(sentence, category_id)
 
-    return result_list
+    unique_list = []
+    [unique_list.append(x) for x in result_list if x not in unique_list]
+    return unique_list
 
 
 async def diary_find_emotions(request: List[str]) -> List[DiaryContent]:
-
     tasks = [find_category_from_sentence(content) for content in request]
     results = await asyncio.gather(*tasks)
 
