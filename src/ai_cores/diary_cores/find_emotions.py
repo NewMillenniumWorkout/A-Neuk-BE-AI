@@ -136,11 +136,17 @@ async def find_category_from_sentence(sentence: str) -> List[str]:
     category_chain = find_category_prompt | llms[0] | find_category_output_parser
     result = await category_chain.ainvoke({"query": sentence})
 
-    result_list = []
+    tasks = []
     for category_id in result.values():
         if category_id < 0 or category_id >= len(emotion_categories):
             category_id = 2
-        result_list += await find_emotions_from_sentence(sentence, category_id)
+        tasks.append(find_emotions_from_sentence(sentence, category_id))
+
+    results = await asyncio.gather(*tasks)
+
+    result_list = []
+    for sublist in results:
+        result_list.extend(sublist)
 
     unique_list = []
     [unique_list.append(x) for x in result_list if x not in unique_list]
