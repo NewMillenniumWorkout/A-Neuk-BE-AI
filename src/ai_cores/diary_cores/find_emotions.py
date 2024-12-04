@@ -9,28 +9,34 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain.embeddings import OpenAIEmbeddings
 import asyncio
-
+import copy
 
 with open("emotions.txt", "r", encoding="utf-8") as f:
     emotions_db = [line.strip() for line in f.readlines()]
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llms = [
+    ChatOpenAI(model="gpt-4o-mini", temperature=0),
+    ChatOpenAI(model="gpt-4o-mini", temperature=0.25),
+    ChatOpenAI(model="gpt-4o-mini", temperature=0.5),
+    ChatOpenAI(model="gpt-4o-mini", temperature=0.75),
+]
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-large")
 
 output_parser = JsonOutputParser(pydantic_object=DiaryEmotionList)
 format_instructions = output_parser.get_format_instructions()
 
 system_prompt = """
-The input sentence is part of a diary entry describing the user’s day. Please perform the following tasks to identify emotions the diary author may have felt but might not have fully noticed.
+다음은 주어진 문장에서 드러날 수 있는 감정을 분석하는 과제입니다. 감정은 한국어 감정 단어 414개 중에서 선택하며, 문맥에 적합하고 자연스러운 감정을 도출해야 합니다.
 
-1. **Extract a total of 10 possible emotions** that the author may have felt in this context, taking into account any **emotional shifts or changes** within the sentence (e.g., if there’s an emotional transition, list the relevant emotions for each shift).
-2. Classify the emotions into two categories:
-   - **common_top1~5**: 5 **common emotions** likely felt in response to the diary’s context. These are emotions that are predictable or easily inferred from the situation.
-   - **uncommon_top1~5**: 5 **uncommon emotions** (specific or unique feelings) that may have been felt. These emotions are less expected in the context but could represent inner thoughts or subtle nuances.
-3. Ensure that **no emotions already present in the input sentence** are selected.
-4. Consider any **overlapping emotions** within the same situation or event in the input (e.g., a mix of enjoyment with a hint of anxiety).
-5. Select all emotions from the provided **list of 421 Korean emotional words**.
-6. **Ensure the chosen emotions feel natural and contextually fitting** within the diary entry. Review each emotion to confirm its relevance.
+### 작업 요구 사항:
+
+1. **총 10개의 가능한 감정**을 추출합니다. 문맥에서의 **감정 변화**(emotional shifts)도 고려하여, 해당 문장에서 느껴졌을 가능성이 있는 감정을 도출합니다.
+2. 추출한 감정을 아래 두 가지 범주로 분류합니다:
+   - **common_top1~7**: 상황에서 **예상 가능한 감정** 7가지. 이는 문맥에 쉽게 유추할 수 있는 일반적인 감정입니다.
+   - **uncommon_top1~3**: 상황에서 **덜 예상되지만 가능성 있는 감정** 3가지. 문맥상 미묘하거나 독특하게 느껴질 수 있는 감정입니다.
+3. **문장 내에 이미 드러나 있는 감정 표현은 제외**합니다.
+4. 동일한 상황에서 **겹치는 감정**(e.g., 즐거움과 동시에 느껴지는 불안함)도 고려합니다.
+5. 최종적으로, **문맥과 자연스럽게 연결되는 감정**인지 검토 후 확정합니다.
 """
 
 prompt = PromptTemplate(
@@ -81,19 +87,30 @@ def find_most_similar_word_embedding(target_word, top_n=1):
 
 
 async def find_emotions_from_sentence(sentence: str) -> List[str]:
-    random.shuffle(emotions_db)
-    chain = prompt | llm | output_parser
-    result = await chain.ainvoke(
-        {"query": sentence, "emotion_list_with_comma": ",".join(emotions_db)}
-    )
+    emotions_db_copy = copy.deepcopy(emotions_db)
     result_list = []
-    for key, value in result.items():
-        if key.startswith("common") or key.startswith("uncommon"):
-            if value in emotions_db:
-                result_list.append(value)
-            else:
-                # result_list.append(find_most_similar_word_embedding(value)) # 임베딩 기반 검색
-                pass
+    for model_num in range(3):
+        random.shuffle(emotions_db_copy)  # emotions_db_copy 랜덤 섞기
+        chain = prompt | llms[model_num] | output_parser
+        result = await chain.ainvoke(
+            {"query": sentence, "emotion_list_with_comma": ",".join(emotions_db_copy)}
+        )
+
+        for key, value in result.items():
+            if key.startswith("common") or key.startswith("uncommon"):
+                if value in emotions_db_copy:
+                    result_list.append(value)
+                else:
+                    print(f"Warning: {value} in {sentence}")
+                    pass
+
+        if len(result_list) > 20:
+            break
+
+        emotions_db_copy[:] = [
+            emotion for emotion in emotions_db_copy if emotion not in result_list
+        ]
+
     return result_list
 
 
