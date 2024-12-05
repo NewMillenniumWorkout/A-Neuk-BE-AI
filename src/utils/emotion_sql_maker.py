@@ -34,11 +34,11 @@ if __name__ == "__main__":
                     continue
                 
                 # SQL 변환
-                # sql_line = f"    ('{word}', '{category}', '{description}', '{example}')"
-                sql_line = f"UPDATE emotion\nSET example='{example}'\nWHERE title='{word}'\n"
+                sql_line = f"    ('{word}', '{category}', '{description}', '{example}')"
+                # sql_line = f"UPDATE emotion\nSET example='{example}'\nWHERE title='{word}'\n"
                 if i < len(lines) - 1:  # 마지막 줄에만 쉼표 제거
-                    # sql_line += ","
-                    sql_line += ";"
+                    sql_line += ","
+                    # sql_line += ";"
                 sql_line += "\n"
                 outfile.write(sql_line)
         
