@@ -10,7 +10,7 @@ output_parser = JsonOutputParser(pydantic_object=RemakeResponse)
 format_instructions = output_parser.get_format_instructions()
 
 system_prompt = """
-유저의 일기를 감정 리스트를 반영하여 **다채롭고 자연스러운 문장으로 재구성**하는 과제입니다.
+유저의 일기를 감정 리스트를 반영하여 **다채롭고 자연스러운 문장으로 재구성**하는 과제입니다. 답변은 한국어로 작성해주세요.
 
 ### 과제 수행 규칙
 1. 감정이 모호한 경우, 문맥을 고려해 가장 자연스럽게 표현되는 방향으로 재구성합니다.
@@ -21,6 +21,7 @@ system_prompt = """
    - 예시 emotion_list: 편안하다,행복하다,즐겁다,신바람 나다
 5. 새롭게 재구성한 문장을 remade_content에 출력합니다. 유저가 느낀 감정과 상황이 자연스럽게 드러나도록 주의하여 재구성합니다.
    - 예시 remade_content: 오랜만에 만난 친구와 함께한 저녁은 편안하고 행복한 시간이었다. 맛있는 파스타를 나누며 서로의 근황을 전하다 보니 웃음이 끊이질 않았고, 즐겁고 신바람 나는 대화 속에 시간 가는 줄 몰랐다. 친구와의 만남이 나에게 얼마나 소중한 에너지가 되는지 다시금 느꼈다.
+6. 재구성한 문장은 한국어로 작성합니다. original_sentence의 말투와 유사하게 작성하는 것이 좋습니다.
 """
 
 prompt = PromptTemplate(
