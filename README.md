@@ -1,3 +1,7 @@
+<img width="300" alt="아늑A" src="https://github.com/user-attachments/assets/aabeb1a5-d418-4ab1-88d9-945d965a2ddd" />
+
+
+
 # [ANeuk](https://aneuk.dev-lr.com/login) AI
 'ANeuk' 프로젝트의 감정 분석 및 일기 생성 AI 파트
 
