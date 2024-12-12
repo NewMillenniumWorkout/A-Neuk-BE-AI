@@ -5,6 +5,13 @@
 
 'ANeuk'은 AI 기반 가짜 감정 중독 예방 및 감정 단어 확장 솔루션입니다. 사용자와 AI 챗봇의 대화를 통해 일기를 생성하고, 감정을 분석하며, 다양한 감정 단어를 학습하도록 돕습니다.
 
+<img width="180" alt="아늑2" src="https://github.com/user-attachments/assets/7773207a-a71f-4226-917e-30a19fec42fa" />
+<img width="180" alt="아늑3" src="https://github.com/user-attachments/assets/6ed6d960-5b54-4b81-bc0c-da9e29dda322" />
+<img width="180" alt="아늑3 (1)" src="https://github.com/user-attachments/assets/4f92e3d6-6699-41c6-a30e-a73f4f6800ba" />
+<img width="180" alt="아늑5" src="https://github.com/user-attachments/assets/95a3a61f-0a06-43b6-a270-b81b6f00c51d" />
+<img width="180" alt="아늑1" src="https://github.com/user-attachments/assets/7db6fdf8-7cc8-47a4-a1e6-e7f4e53ab22d" />
+
+
 ### 개발 동기 및 배경
 
 - 현대 사회에서 증가하는 가짜 감정 중독 문제 해결
