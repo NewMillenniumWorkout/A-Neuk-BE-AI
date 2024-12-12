@@ -1,4 +1,4 @@
-# ANeuk AI
+# [ANeuk](https://aneuk.dev-lr.com/login) AI
 'ANeuk' 프로젝트의 감정 분석 및 일기 생성 AI 파트
 
 <img width="600" alt="아늑A" src="https://github.com/user-attachments/assets/39aa742a-0176-49df-9b7a-6c4df62fe12f" />
