@@ -10,6 +10,10 @@
 <img width="180" alt="아늑3 (1)" src="https://github.com/user-attachments/assets/4f92e3d6-6699-41c6-a30e-a73f4f6800ba" />
 <img width="180" alt="아늑5" src="https://github.com/user-attachments/assets/95a3a61f-0a06-43b6-a270-b81b6f00c51d" />
 <img width="180" alt="아늑1" src="https://github.com/user-attachments/assets/7db6fdf8-7cc8-47a4-a1e6-e7f4e53ab22d" />
+<img width="180" alt="아늑8" src="https://github.com/user-attachments/assets/455c5feb-8ae3-43e1-a676-efb517a82457" />
+<img width="180" alt="아늑6" src="https://github.com/user-attachments/assets/a0abf9ad-f10a-4e7d-9590-29f71070f1c0" />
+<img width="180" alt="아늑7" src="https://github.com/user-attachments/assets/4fee0cf4-bde4-4217-89de-065beb787289" />
+
 
 
 ### 개발 동기 및 배경
