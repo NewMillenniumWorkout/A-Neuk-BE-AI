@@ -1,6 +1,9 @@
 # ANeuk AI
 'ANeuk' 프로젝트의 감정 분석 및 일기 생성 AI 파트
 
+<img width="600" alt="아늑A" src="https://github.com/user-attachments/assets/39aa742a-0176-49df-9b7a-6c4df62fe12f" />
+
+
 ## 프로젝트 개요
 
 'ANeuk'은 AI 기반 가짜 감정 중독 예방 및 감정 단어 확장 솔루션입니다. 사용자와 AI 챗봇의 대화를 통해 일기를 생성하고, 감정을 분석하며, 다양한 감정 단어를 학습하도록 돕습니다.
