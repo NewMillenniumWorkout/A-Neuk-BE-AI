@@ -22,5 +22,5 @@ RUN uv sync --frozen --no-dev
 # Expose the port FastAPI will run on
 EXPOSE 8000
 
-# Run the FastAPI app with Uvicorn
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the FastAPI app with Uvicorn directly from venv
+CMD [".venv/bin/uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
