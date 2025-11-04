@@ -1,0 +1,42 @@
+# LLM Configuration for ANeuk AI
+# Edit this file to change models, temperatures, and parameters
+# No environment variables needed - everything is configured here!
+
+models:
+  # Chat conversation model
+  chat:
+    model_name: "gemini-flash-lite-latest"
+    temperature: 0.7
+
+  # Diary generation model
+  diary:
+    model_name: "gemini-flash-latest"
+    temperature: 0.7
+
+  # Diary splitting model (deterministic)
+  diary_split:
+    model_name: "gemini-flash-lite-latest"
+    temperature: 0.0
+
+  # Emotion finding models with varying temperatures
+  emotion_finding:
+    primary:
+      model_name: "gemini-flash-lite-latest"
+      temperature: 0.0
+
+    low:
+      model_name: "gemini-flash-lite-latest"
+      temperature: 0.25
+
+    medium:
+      model_name: "gemini-flash-lite-latest"
+      temperature: 0.5
+
+    high:
+      model_name: "gemini-flash-lite-latest"
+      temperature: 0.75
+
+  # Sentence remaking model
+  remake:
+    model_name: "gemini-flash-latest"
+    temperature: 0.25

@@ -1,9 +1,9 @@
 import random
 from typing import List
 from src.models.diary_models import DiaryContent, DiaryEmotionList, DirayCategoryList
-from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import PromptTemplate
+from src.config.llm_config import get_emotion_finding_llms
 import asyncio
 import copy
 
@@ -39,12 +39,7 @@ except Exception as e:
 # for key, values in emotion_dict.items():
 #     print(f"{key}: {values}")
 
-llms = [
-    ChatOpenAI(model="gpt-4o-mini", temperature=0),
-    ChatOpenAI(model="gpt-4o-mini", temperature=0.25),
-    ChatOpenAI(model="gpt-4o-mini", temperature=0.5),
-    ChatOpenAI(model="gpt-4o-mini", temperature=0.75),
-]
+llms = get_emotion_finding_llms()
 
 find_category_output_parser = JsonOutputParser(pydantic_object=DirayCategoryList)
 find_category_format_instructions = (

@@ -1,12 +1,10 @@
 from typing import List
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from src.models.remake_models import RemakeResponse
-from langchain_google_genai import ChatGoogleGenerativeAI
+from src.config.llm_config import get_remake_llm
 
-# llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.25)
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-preview-04-17")
+llm = get_remake_llm()
 
 output_parser = JsonOutputParser(pydantic_object=RemakeResponse)
 format_instructions = output_parser.get_format_instructions()

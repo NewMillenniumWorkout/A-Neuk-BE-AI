@@ -1,11 +1,9 @@
 from langchain_core.output_parsers import StrOutputParser
-from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.models.chat_models import ChatRequest
-from langchain_google_genai import ChatGoogleGenerativeAI
+from src.config.llm_config import get_chat_llm
 
-# chat_llm = ChatOpenAI(model="gpt-4o-mini")
-chat_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-preview-04-17")
+chat_llm = get_chat_llm()
 
 system_prompt = """
 You are the user's doppelganger, creating a diary of the day through conversation.
