@@ -114,44 +114,26 @@
 - Python 3.11 이상
 - [uv](https://docs.astral.sh/uv/) 패키지 매니저
 
-### uv 설치
-
-```bash
-# macOS/Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Windows
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# Homebrew (macOS)
-brew install uv
-```
 
 ### 프로젝트 설정
 
-1. 저장소 클론
-```bash
-git clone <repository-url>
-cd A-Neuk-BE-AI
-```
-
-2. 환경 변수 설정
+1. 환경 변수 설정
 ```bash
 cp .env-example .env
 # .env 파일을 열어 API 키 설정
 ```
 
-3. 의존성 설치
+2. 의존성 설치
 ```bash
 uv sync
 ```
 
-4. 개발 서버 실행
+3. 개발 서버 실행
 ```bash
 uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-5. API 문서 확인
+4. API 문서 확인
 ```
 http://localhost:8000/docs
 ```
