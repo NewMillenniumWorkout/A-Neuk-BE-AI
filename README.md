@@ -107,6 +107,65 @@
 - **`few shot prompt`**: 문장 재생성 예시를 제공합니다.
 - **`Debounce`**: 과도한 리소스 낭비를 억제하기 위해 `debounce` 기법을 사용합니다.
 
+## 설치 및 실행
+
+### 필요 조건
+
+- Python 3.11 이상
+- [uv](https://docs.astral.sh/uv/) 패키지 매니저
+
+### uv 설치
+
+```bash
+# macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Homebrew (macOS)
+brew install uv
+```
+
+### 프로젝트 설정
+
+1. 저장소 클론
+```bash
+git clone <repository-url>
+cd A-Neuk-BE-AI
+```
+
+2. 환경 변수 설정
+```bash
+cp .env-example .env
+# .env 파일을 열어 API 키 설정
+```
+
+3. 의존성 설치
+```bash
+uv sync
+```
+
+4. 개발 서버 실행
+```bash
+uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+5. API 문서 확인
+```
+http://localhost:8000/docs
+```
+
+### Docker로 실행
+
+```bash
+# 이미지 빌드
+docker build -t aneuk-ai .
+
+# 컨테이너 실행
+docker run -p 8000:8000 --env-file .env aneuk-ai
+```
+
 ## 사용법
 
 ### API 엔드포인트
