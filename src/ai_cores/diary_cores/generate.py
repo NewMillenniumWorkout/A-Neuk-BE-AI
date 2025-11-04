@@ -1,12 +1,9 @@
 from langchain_core.output_parsers import StrOutputParser
-from langchain.schema.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.models.diary_models import DiaryRequest, LLMError
-from langchain_google_genai import ChatGoogleGenerativeAI
+from src.config.llm_config import get_diary_llm
 
-
-# chat_llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
-chat_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-preview-04-17")
+chat_llm = get_diary_llm()
 
 default_diary_1 = """
 수현, 명석과의 먹방의 날 ,, 수현언니 시험 끝난 기념으로 상도에 새로 생긴 돼지한약방..?에 갔다. 가격은 좀 있었지만 고기 다 구워주시고 맛도 있었다!!
