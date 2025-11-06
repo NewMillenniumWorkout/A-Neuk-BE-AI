@@ -55,7 +55,7 @@ async def chat_generate(request: ChatRequest) -> str:
     result = await chain.ainvoke(messages)
 
     # LLM 응답 로깅
-    logger.info(f"[Chat LLM Response] chat_id={request.chat_id}, Response: {result}")
+    print(f"[Chat LLM Response] chat_id={request.chat_id}, Response: {result}")
 
     await asyncio.sleep(1)
     return result
