@@ -102,6 +102,15 @@ def get_chat_llm():
     return _get_single_llm_model(_config.models.chat)
 
 
+def get_chat_fallback_llm():
+    """
+    Get fallback LLM for chat generation when primary model fails.
+
+    Configuration: llm_config.yaml -> models.chat_fallback
+    """
+    return _get_single_llm_model(_config.models.chat_fallback)
+
+
 def get_diary_llm():
     """
     Get LLM for diary generation.
@@ -152,6 +161,7 @@ print("=" * 60)
 print("LLM Configuration Loaded from: llm_config.yaml")
 print("=" * 60)
 print(f"Chat          : {_config.models.chat.model_name} (temp={_config.models.chat.temperature})")
+print(f"Chat Fallback : {_config.models.chat_fallback.model_name} (temp={_config.models.chat_fallback.temperature})")
 print(f"Diary         : {_config.models.diary.model_name} (temp={_config.models.diary.temperature})")
 print(f"Diary Split   : {_config.models.diary_split.model_name} (temp={_config.models.diary_split.temperature})")
 print(f"Emotion (x4)  : {_config.models.emotion_finding.primary.model_name} (temps: 0.0, 0.25, 0.5, 0.75)")

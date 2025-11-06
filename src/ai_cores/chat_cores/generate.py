@@ -3,11 +3,12 @@ import logging
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.models.chat_models import ChatRequest
-from src.config.llm_config import get_chat_llm
+from src.config.llm_config import get_chat_llm, get_chat_fallback_llm
 
 logger = logging.getLogger(__name__)
 
 chat_llm = get_chat_llm()
+chat_fallback_llm = get_chat_fallback_llm()
 
 system_prompt = """
 You are the user's doppelganger, creating a diary of the day through conversation.
@@ -52,10 +53,28 @@ async def chat_generate(request: ChatRequest) -> str:
             messages.append(AIMessage(content=m.message))
 
     chain = chat_llm | StrOutputParser()
-    result = await chain.ainvoke(messages)
 
-    # LLM 응답 로깅
-    print(f"[Chat LLM Response] chat_id={request.chat_id}, Response: {result}")
+    # 최대 3번 재시도
+    max_retries = 3
+    for attempt in range(max_retries):
+        # 마지막 시도는 fallback 모델 사용
+        if attempt == max_retries - 1:
+            print(f"[Chat LLM Info] chat_id={request.chat_id}, Last attempt: Using fallback model")
+            chain = chat_fallback_llm | StrOutputParser()
 
-    await asyncio.sleep(1)
-    return result
+        result = await chain.ainvoke(messages)
+
+        # 응답이 빈 문자열인지 확인
+        if result and result.strip():
+            # LLM 응답 로깅
+            print(f"[Chat LLM Response] chat_id={request.chat_id}, Response: {result}")
+            await asyncio.sleep(1)
+            return result
+
+        # 빈 응답일 경우 로그 출력
+        print(f"[Chat LLM Warning] chat_id={request.chat_id}, Attempt {attempt + 1}/{max_retries}: Empty response received, retrying...")
+
+    # 모든 재시도 실패 시 에러 발생
+    error_msg = f"chat_id={request.chat_id}: LLM returned empty response after {max_retries} attempts"
+    print(f"[Chat LLM Error] {error_msg}")
+    raise ValueError(error_msg)
