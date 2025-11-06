@@ -1,3 +1,4 @@
+import asyncio
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.models.chat_models import ChatRequest
@@ -49,4 +50,5 @@ async def chat_generate(request: ChatRequest) -> str:
 
     chain = chat_llm | StrOutputParser()
     result = await chain.ainvoke(messages)
+    await asyncio.sleep(1)
     return result
