@@ -1,8 +1,11 @@
 import asyncio
+import logging
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from src.models.chat_models import ChatRequest
 from src.config.llm_config import get_chat_llm
+
+logger = logging.getLogger(__name__)
 
 chat_llm = get_chat_llm()
 
@@ -50,5 +53,9 @@ async def chat_generate(request: ChatRequest) -> str:
 
     chain = chat_llm | StrOutputParser()
     result = await chain.ainvoke(messages)
+
+    # LLM 응답 로깅
+    logger.info(f"[Chat LLM Response] chat_id={request.chat_id}, Response: {result}")
+
     await asyncio.sleep(1)
     return result
