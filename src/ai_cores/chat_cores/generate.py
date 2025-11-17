@@ -39,27 +39,26 @@ async def chat_generate(request: ChatRequest) -> str:
         elif m.role == "ASSISTANT":
             messages.append(AIMessage(content=m.message))
 
-    chain = chat_llm | StrOutputParser()
-
-    # 최대 3번 재시도
     max_retries = 3
-    for attempt in range(max_retries):
-        # 마지막 시도는 fallback 모델 사용
-        if attempt == max_retries - 1:
-            print(f"[Chat LLM Info] chat_id={request.chat_id}, Last attempt: Using fallback model")
-            chain = chat_fallback_llm | StrOutputParser()
+    llm_sequence = [chat_llm] * (max_retries - 1) + [chat_fallback_llm]
 
-        result = await chain.ainvoke(messages)
+    for attempt, llm in enumerate(llm_sequence, start=1):
+        if llm is chat_fallback_llm:
+            print(f"[Chat LLM Info] chat_id={request.chat_id}, Last attempt: Using fallback model")
+
+        result = await (llm | StrOutputParser()).ainvoke(messages)
 
         # 응답이 빈 문자열인지 확인
         if result and result.strip():
             # LLM 응답 로깅
             print(f"[Chat LLM Response] chat_id={request.chat_id}, Response: {result}")
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.5)
             return result
 
         # 빈 응답일 경우 로그 출력
-        print(f"[Chat LLM Warning] chat_id={request.chat_id}, Attempt {attempt + 1}/{max_retries}: Empty response received, retrying...")
+        print(f"[Chat LLM Warning] chat_id={request.chat_id}, Attempt {attempt}/{max_retries}: Empty response received, retrying...")
+        if attempt < max_retries:
+            await asyncio.sleep(1)
 
     # 모든 재시도 실패 시 에러 발생
     error_msg = f"chat_id={request.chat_id}: LLM returned empty response after {max_retries} attempts"
