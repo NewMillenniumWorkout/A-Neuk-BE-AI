@@ -12,11 +12,9 @@ models:
 
   # Chat fallback model (used when primary chat model returns empty response)
   chat_fallback:
-    model_name: "gemini-flash-latest"
-    temperature: 0.7
-    thinking_mode: true
-    thinking_budget: 512
-    max_output_tokens: 5096
+    model_name: "gpt-5-mini"
+    temperature: 1.0
+    reasoning_effort: "medium"
 
   # Diary generation model
   diary:
